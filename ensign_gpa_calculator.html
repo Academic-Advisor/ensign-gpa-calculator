@@ -1,0 +1,988 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Ensign College GPA Calculator</title>
+
+<style>
+
+/* =========================
+   GENERAL STYLING
+========================= */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: #f4f4f4;
+    color: #252525;
+}
+
+/* =========================
+   ENSIGN COLLEGE HEADER
+========================= */
+
+.header {
+    background: #006747;
+    color: white;
+    padding: 20px 35px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.logo {
+    font-family: Georgia, serif;
+    font-size: 25px;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.header-divider {
+    height: 40px;
+    width: 1px;
+    background: rgba(255,255,255,.5);
+}
+
+.header-title {
+    font-size: 17px;
+}
+
+/* =========================
+   PAGE TITLE
+========================= */
+
+.title-section {
+    background: #f1f1f1;
+    padding: 55px 15px;
+    text-align: center;
+}
+
+.title-section h1 {
+    font-size: 38px;
+    font-weight: 500;
+    margin: 0;
+    color: #18352c;
+}
+
+.title-section p {
+    color: #666;
+    margin-top: 12px;
+}
+
+/* =========================
+   MAIN CONTAINER
+========================= */
+
+.container {
+    max-width: 1100px;
+    margin: 40px auto;
+    padding: 35px;
+    background: white;
+    box-shadow: 0 2px 8px rgba(0,0,0,.06);
+}
+
+/* =========================
+   SECTION HEADINGS
+========================= */
+
+h2 {
+    color: #006747;
+    font-size: 24px;
+    font-weight: 600;
+    margin-top: 35px;
+    border-bottom: 2px solid #006747;
+    padding-bottom: 10px;
+}
+
+.subtitle {
+    color: #555;
+    font-size: 15px;
+    margin-bottom: 25px;
+}
+
+/* =========================
+   GPA TABLE
+========================= */
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background: white;
+    table-layout: fixed;
+}
+
+th {
+    background: #006747;
+    color: white;
+    padding: 15px 6px;
+    font-size: 14px;
+    font-weight: 600;
+    text-align: center;
+}
+
+td {
+    padding: 11px 6px;
+    border-bottom: 1px solid #e5e5e5;
+    text-align: center;
+    font-size: 14px;
+}
+
+select,
+input {
+    width: 100%;
+    min-width: 0;
+    padding: 11px 6px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    font-size: 14px;
+    background: white;
+    color: #333;
+}
+
+select:focus,
+input:focus {
+    outline: none;
+    border-color: #006747;
+    box-shadow: 0 0 0 2px rgba(0,103,71,.12);
+}
+
+.result {
+    font-weight: 600;
+    color: #006747;
+}
+
+/* Remove button inside Grade column */
+
+.grade-cell {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.grade-cell select {
+    flex: 1;
+}
+
+.remove {
+    background: #a62b2b;
+    color: white;
+    border: none;
+    padding: 9px 7px;
+    border-radius: 3px;
+    cursor: pointer;
+    margin: 0;
+}
+
+/* =========================
+   BUTTONS
+========================= */
+
+button {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    margin-top: 15px;
+    font-size: 14px;
+    font-weight: 600;
+    transition: .2s;
+}
+
+.add {
+    background: #006747;
+    color: white;
+}
+
+.add:hover {
+    background: #004d36;
+}
+
+.reset {
+    background: #666;
+    color: white;
+}
+
+.reset:hover {
+    background: #444;
+}
+
+/* =========================
+   GPA RESULTS
+========================= */
+
+.summary {
+    margin-top: 30px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+}
+
+.summary-box {
+    background: #f5f7f6;
+    border: 1px solid #e1e8e4;
+    padding: 22px;
+    text-align: center;
+    border-radius: 4px;
+}
+
+.summary-box h3 {
+    margin: 0 0 10px;
+    color: #006747;
+    font-size: 15px;
+}
+
+.summary-box p {
+    font-size: 27px;
+    font-weight: 700;
+    color: #17352c;
+    margin: 0;
+}
+
+/* Main GPA */
+
+.gpa-box {
+    grid-column: 1 / -1;
+    background: #006747;
+    border: none;
+}
+
+.gpa-box h3,
+.gpa-box p {
+    color: white;
+}
+
+.gpa-box p {
+    font-size: 38px;
+}
+
+/* =========================
+   SAP PROGRESS BAR
+========================= */
+
+.progress-container {
+    background: #e5e5e5;
+    height: 12px;
+    width: 100%;
+    border-radius: 20px;
+    overflow: hidden;
+    margin-top: 15px;
+}
+
+.progress-bar {
+    background: #006747;
+    height: 100%;
+    width: 0%;
+    transition: width .3s;
+}
+
+/* =========================
+   GRADING SYSTEM
+========================= */
+
+.section {
+    margin-top: 45px;
+    line-height: 1.7;
+}
+
+.section p,
+.section li {
+    font-size: 15px;
+    color: #444;
+}
+
+.grades th,
+.grades td {
+    text-align: left;
+    padding: 11px;
+}
+
+.note {
+    color: #666;
+    font-size: 13px;
+    margin-top: 18px;
+    line-height: 1.6;
+}
+
+/* =========================
+   FOOTER
+========================= */
+
+.footer {
+    background: #006747;
+    color: white;
+    text-align: center;
+    padding: 22px;
+    font-size: 13px;
+}
+
+/* =========================
+   MOBILE RESPONSIVE
+========================= */
+
+@media (max-width: 600px) {
+
+    .header {
+        padding: 18px 12px;
+        gap: 10px;
+    }
+
+    .logo {
+        font-size: 18px;
+    }
+
+    .header-title {
+        font-size: 13px;
+    }
+
+    .title-section {
+        padding: 35px 10px;
+    }
+
+    .title-section h1 {
+        font-size: 27px;
+    }
+
+    .container {
+        margin: 15px 5px;
+        padding: 12px;
+    }
+
+    th {
+        font-size: 10px;
+        padding: 10px 2px;
+    }
+
+    td {
+        padding: 7px 2px;
+        font-size: 12px;
+    }
+
+    select,
+    input {
+        font-size: 12px;
+        padding: 9px 2px;
+    }
+
+    .remove {
+        padding: 8px 4px;
+        font-size: 11px;
+    }
+
+    .summary {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .summary-box {
+        padding: 15px 8px;
+    }
+
+    .summary-box h3 {
+        font-size: 12px;
+    }
+
+    .summary-box p {
+        font-size: 22px;
+    }
+
+    .gpa-box p {
+        font-size: 32px;
+    }
+
+    h2 {
+        font-size: 21px;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- ENSIGN COLLEGE HEADER -->
+
+<header class="header">
+
+    <div class="logo">ENSIGN COLLEGE</div>
+
+    <div class="header-divider"></div>
+
+    <div class="header-title">GPA Calculator</div>
+
+</header>
+
+<!-- PAGE TITLE -->
+
+<section class="title-section">
+
+    <h1>GPA Calculator</h1>
+
+    <p>Calculate your Ensign College grade point average.</p>
+
+</section>
+
+<!-- MAIN CONTENT -->
+
+<main class="container">
+
+    <h2>Grade Calculator</h2>
+
+    <p class="subtitle">
+        Select your course grades and enter your credit hours.
+        Your GPA will calculate automatically.
+    </p>
+
+    <!-- FOUR MAIN COLUMNS -->
+
+    <table id="gpaTable">
+
+        <thead>
+            <tr>
+                <th>Grade</th>
+                <th>Points</th>
+                <th>Total Credits</th>
+                <th>Total Points</th>
+            </tr>
+        </thead>
+
+        <tbody id="courseRows"></tbody>
+
+    </table>
+
+    <button class="add" onclick="addRow()">
+        + Add Course
+    </button>
+
+    <button class="reset" onclick="resetCalculator()">
+        Reset Calculator
+    </button>
+
+    <!-- GPA SUMMARY -->
+
+    <h2>GPA Results</h2>
+
+    <div class="summary">
+
+        <div class="summary-box">
+            <h3>Attempted Credits</h3>
+            <p id="attempted">0.00</p>
+        </div>
+
+        <div class="summary-box">
+            <h3>Earned Credits</h3>
+            <p id="earned">0.00</p>
+        </div>
+
+        <div class="summary-box">
+            <h3>Passed Credits</h3>
+            <p id="passed">0.00</p>
+        </div>
+
+        <div class="summary-box">
+            <h3>Quality Credits</h3>
+            <p id="quality">0.00</p>
+        </div>
+
+        <div class="summary-box">
+            <h3>Total Quality Points</h3>
+            <p id="points">0.00</p>
+        </div>
+
+        <div class="summary-box">
+            <h3>SAP Percentage</h3>
+            <p id="sap">0.00%</p>
+            <div class="progress-container">
+                <div class="progress-bar" id="progress"></div>
+            </div>
+        </div>
+
+        <div class="summary-box gpa-box">
+            <h3>YOUR GPA</h3>
+            <p id="gpa">0.00</p>
+            <small>Out of 4.00</small>
+        </div>
+
+    </div>
+
+    <p class="note">
+        GPA = Quality Points ÷ Quality Credits.
+        SAP = Earned Credits ÷ Attempted Credits × 100.
+    </p>
+
+    <!-- OFFICIAL GRADING SCALE -->
+
+    <section class="section">
+
+        <h2>Ensign College Grading Scale</h2>
+
+        <table class="grades">
+
+            <thead>
+                <tr>
+                    <th>Grade</th>
+                    <th>Grade Points Per Credit</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr><td>A</td><td>4.0</td></tr>
+                <tr><td>A-</td><td>3.7</td></tr>
+                <tr><td>B+</td><td>3.4</td></tr>
+                <tr><td>B</td><td>3.0</td></tr>
+                <tr><td>B-</td><td>2.7</td></tr>
+                <tr><td>C+</td><td>2.4</td></tr>
+                <tr><td>C</td><td>2.0</td></tr>
+                <tr><td>C-</td><td>1.7</td></tr>
+                <tr><td>D+</td><td>1.4</td></tr>
+                <tr><td>D</td><td>1.0</td></tr>
+                <tr><td>D-</td><td>0.7</td></tr>
+                <tr><td>E</td><td>0.0</td></tr>
+            </tbody>
+
+        </table>
+
+    </section>
+
+    <!-- GRADING SYSTEM -->
+
+    <section class="section">
+
+        <h2>Grading System</h2>
+
+        <p>
+            Grades are determined by each instructor based upon
+            an evaluation of all assigned and completed coursework.
+            Course participation, mastery of subject matter, and
+            promise of continuing success in sequential courses
+            are all criteria used to evaluate progress.
+        </p>
+
+        <p><strong>A – Outstanding:</strong>
+        Outstanding understanding, application, and integration
+        of subject material. Demonstrates original thinking,
+        skillful use of concepts, and ability to solve complex problems.</p>
+
+        <p><strong>B – Significant:</strong>
+        Considerable understanding, application, and incorporation
+        of course materials.</p>
+
+        <p><strong>C – Sufficient:</strong>
+        Sufficient understanding of subject matter and participation
+        in the Learning Signature.</p>
+
+        <p><strong>D – Poor:</strong>
+        Poor performance and initiative to learn and apply course
+        materials. Retaking the course or remediation may be necessary.</p>
+
+        <p><strong>E – Failure:</strong>
+        Indicates failure in the course.</p>
+
+        <p><strong>P – Pass:</strong>
+        Passing grade. Does not affect GPA.</p>
+
+        <p><strong>W – Withdrawal:</strong>
+        Withdrawal from the class. Does not affect GPA.</p>
+
+        <p><strong>I – Incomplete:</strong>
+        Conditional grade requiring approval and completion of
+        remaining coursework.</p>
+
+        <p><strong>IP – In Progress:</strong>
+        Does not affect GPA.</p>
+
+        <p><strong>T – Temporary:</strong>
+        Temporary grade used for qualifying course disruptions.</p>
+
+        <p><strong>CR – Credit:</strong>
+        Credit given. Does not affect GPA.</p>
+
+        <p><strong>NC – No Credit:</strong>
+        No credit awarded. Does not affect GPA.</p>
+
+        <p><strong>NR – Not Reported:</strong>
+        Grade has not been reported by the instructor.</p>
+
+        <p><strong>V – Audit:</strong>
+        Course taken for audit. Does not affect GPA or SAP.</p>
+
+    </section>
+
+    <!-- CREDIT DEFINITIONS -->
+
+    <section class="section">
+
+        <h2>Credit Definitions</h2>
+
+        <ul>
+
+            <li>
+                <strong>Attempted:</strong>
+                Total credits in which a student has registered.
+            </li>
+
+            <li>
+                <strong>Earned:</strong>
+                Total credits successfully completed.
+            </li>
+
+            <li>
+                <strong>Passed:</strong>
+                Credits earned that do not factor into GPA.
+            </li>
+
+            <li>
+                <strong>Quality:</strong>
+                Credits that factor into GPA.
+            </li>
+
+            <li>
+                <strong>Points:</strong>
+                Total grade points earned.
+            </li>
+
+        </ul>
+
+    </section>
+
+    <!-- GPA AND SAP -->
+
+    <section class="section">
+
+        <h2>Calculating GPA and SAP</h2>
+
+        <p>
+            <strong>GPA:</strong>
+            Quality Points divided by Quality Credits.
+        </p>
+
+        <p>
+            <strong>SAP:</strong>
+            Earned Credits divided by Attempted Credits.
+        </p>
+
+        <p class="note">
+            Financial aid eligibility may use additional GPA and
+            Satisfactory Academic Progress requirements. Consult
+            the Ensign College Financial Aid Office for official
+            eligibility determinations.
+        </p>
+
+    </section>
+
+</main>
+
+<!-- FOOTER -->
+
+<footer class="footer">
+
+    Ensign College GPA Calculator
+
+    <br><br>
+
+    GPA calculations are estimates and are not official academic records.
+
+</footer>
+
+
+<!-- JAVASCRIPT CALCULATIONS -->
+
+<script>
+
+/* ENSIGN COLLEGE GRADE POINTS */
+
+const gradePoints = {
+
+    "A": 4.0,
+    "A-": 3.7,
+    "B+": 3.4,
+    "B": 3.0,
+    "B-": 2.7,
+    "C+": 2.4,
+    "C": 2.0,
+    "C-": 1.7,
+    "D+": 1.4,
+    "D": 1.0,
+    "D-": 0.7,
+    "E": 0.0
+
+};
+
+/* NON-GPA GRADES */
+
+const excludedGrades = [
+    "P",
+    "I",
+    "IP",
+    "T",
+    "W",
+    "NR",
+    "CR",
+    "NC",
+    "V"
+];
+
+const allGrades = [
+    ...Object.keys(gradePoints),
+    ...excludedGrades
+];
+
+
+/* ADD COURSE ROW */
+
+function addRow() {
+
+    const tbody = document.getElementById("courseRows");
+
+    const row = document.createElement("tr");
+
+    const options = allGrades.map(grade =>
+
+        `<option value="${grade}">${grade}</option>`
+
+    ).join("");
+
+    row.innerHTML = `
+
+        <td>
+            <div class="grade-cell">
+
+                <select class="grade"
+                    onchange="calculateGPA()">
+
+                    <option value="">Select</option>
+
+                    ${options}
+
+                </select>
+
+                <button class="remove"
+                    onclick="removeRow(this)"
+                    title="Remove course">
+                    X
+                </button>
+
+            </div>
+        </td>
+
+        <td class="result points">-</td>
+
+        <td>
+            <input
+                type="number"
+                class="credits"
+                value="3"
+                min="0"
+                step="0.01"
+                oninput="calculateGPA()"
+            >
+        </td>
+
+        <td class="result totalPoints">-</td>
+
+    `;
+
+    tbody.appendChild(row);
+
+    calculateGPA();
+
+}
+
+
+/* REMOVE COURSE */
+
+function removeRow(button) {
+
+    button.closest("tr").remove();
+
+    calculateGPA();
+
+}
+
+
+/* CALCULATE GPA AND SAP */
+
+function calculateGPA() {
+
+    let attempted = 0;
+
+    let earned = 0;
+
+    let passed = 0;
+
+    let quality = 0;
+
+    let totalPoints = 0;
+
+    const rows = document.querySelectorAll(
+        "#courseRows tr"
+    );
+
+    rows.forEach(row => {
+
+        const grade = row.querySelector(".grade").value;
+
+        const creditInput = row.querySelector(".credits");
+
+        const credits = Math.max(
+            0,
+            Number(creditInput.value) || 0
+        );
+
+        const pointsCell = row.querySelector(".points");
+
+        const totalCell = row.querySelector(".totalPoints");
+
+
+        if (!grade || credits <= 0) {
+
+            pointsCell.textContent = "-";
+
+            totalCell.textContent = "-";
+
+            return;
+
+        }
+
+
+        /* AUDIT COURSES */
+
+        if (grade === "V") {
+
+            pointsCell.textContent = "-";
+
+            totalCell.textContent = "-";
+
+            return;
+
+        }
+
+
+        attempted += credits;
+
+
+        /* GPA GRADES */
+
+        if (Object.hasOwn(gradePoints, grade)) {
+
+            const points = gradePoints[grade];
+
+            const coursePoints = points * credits;
+
+            pointsCell.textContent = points.toFixed(1);
+
+            totalCell.textContent = coursePoints.toFixed(2);
+
+            quality += credits;
+
+            totalPoints += coursePoints;
+
+
+            /* E IS NOT EARNED */
+
+            if (grade !== "E") {
+
+                earned += credits;
+
+            }
+
+        }
+
+
+        /* PASS AND CREDIT GRADES */
+
+        else {
+
+            pointsCell.textContent = "-";
+
+            totalCell.textContent = "-";
+
+            if (grade === "P" || grade === "CR") {
+
+                earned += credits;
+
+                passed += credits;
+
+            }
+
+        }
+
+    });
+
+
+    /* FINAL GPA */
+
+    const gpa = quality > 0
+        ? totalPoints / quality
+        : 0;
+
+
+    /* FINAL SAP */
+
+    const sap = attempted > 0
+        ? (earned / attempted) * 100
+        : 0;
+
+
+    /* DISPLAY RESULTS */
+
+    document.getElementById("attempted").textContent =
+        attempted.toFixed(2);
+
+    document.getElementById("earned").textContent =
+        earned.toFixed(2);
+
+    document.getElementById("passed").textContent =
+        passed.toFixed(2);
+
+    document.getElementById("quality").textContent =
+        quality.toFixed(2);
+
+    document.getElementById("points").textContent =
+        totalPoints.toFixed(2);
+
+    document.getElementById("gpa").textContent =
+        gpa.toFixed(2);
+
+    document.getElementById("sap").textContent =
+        sap.toFixed(2) + "%";
+
+
+    /* UPDATE SAP PROGRESS BAR */
+
+    document.getElementById("progress").style.width =
+        Math.min(100, sap) + "%";
+
+}
+
+
+/* RESET CALCULATOR */
+
+function resetCalculator() {
+
+    document.getElementById("courseRows").innerHTML = "";
+
+    for (let i = 0; i < 5; i++) {
+
+        addRow();
+
+    }
+
+}
+
+
+/* START WITH FIVE EMPTY COURSES */
+
+resetCalculator();
+
+</script>
+
+</body>
+</html>
